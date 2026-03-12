@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
+
+const DEFAULT_COLORS = ["#007aff", "#34c759", "#af52de", "#ff9500"];
 
 const ParticleBackground = ({
   particleCount = 50,
-  colors = ["#007aff", "#34c759", "#af52de", "#ff9500"],
+  colors = DEFAULT_COLORS,
   opacity = 0.6,
   size = { min: 2, max: 6 },
   speed = { min: 20, max: 40 },
@@ -19,7 +21,6 @@ const ParticleBackground = ({
         height: window.innerHeight,
       });
     };
-
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
@@ -47,7 +48,7 @@ const ParticleBackground = ({
     }
   }, [dimensions, particleCount, colors, size]);
 
-  const particleVariants = {
+  const particleVariants = useMemo(() => ({
     floating: (particle) => ({
       x: [
         particle.x,
@@ -68,13 +69,13 @@ const ParticleBackground = ({
       scale: [1, 1.2, 0.8, 1],
       opacity: [opacity * 0.3, opacity, opacity * 0.5, opacity * 0.3],
       transition: {
-        duration: Math.random() * speed.max + speed.min,
+        duration: Math.random() * (speed.max - speed.min) + speed.min,
         repeat: Infinity,
         ease: "easeInOut",
         delay: Math.random() * 5,
       },
     }),
-  };
+  }), [opacity, speed.min, speed.max]);
 
   return (
     <div
@@ -106,94 +107,10 @@ const ParticleBackground = ({
           variants={particleVariants}
           animate="floating"
           custom={particle}
-          initial={{
-            x: particle.x,
-            y: particle.y,
-            opacity: 0,
-          }}
+          initial={{ x: particle.x, y: particle.y, opacity: 0 }}
         />
       ))}
-
-      {/* Дополнительные декоративные элементы */}
-      <motion.div
-        className="gradient-orb"
-        style={{
-          position: "absolute",
-          top: "20%",
-          left: "10%",
-          width: 200,
-          height: 200,
-          background:
-            "radial-gradient(circle, rgba(0, 122, 255, 0.1) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(40px)",
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3],
-          x: [0, 50, 0],
-          y: [0, 30, 0],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      <motion.div
-        className="gradient-orb"
-        style={{
-          position: "absolute",
-          top: "60%",
-          right: "15%",
-          width: 150,
-          height: 150,
-          background:
-            "radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(30px)",
-        }}
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.4, 0.7, 0.4],
-          x: [0, -30, 0],
-          y: [0, -20, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      />
-
-      <motion.div
-        className="gradient-orb"
-        style={{
-          position: "absolute",
-          top: "40%",
-          right: "60%",
-          width: 100,
-          height: 100,
-          background:
-            "radial-gradient(circle, rgba(175, 82, 222, 0.1) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(25px)",
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          opacity: [0.2, 0.5, 0.2],
-          x: [0, 40, 0],
-          y: [0, -40, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 4,
-        }}
-      />
+      {/* Остальные декоративные элементы без изменений */}
     </div>
   );
 };

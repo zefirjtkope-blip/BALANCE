@@ -15,7 +15,7 @@ const StepWizard = ({
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [direction, setDirection] = useState(1); // 1 для вперед, -1 для назад
 
-  // Обновление данных шага
+  // Стабилизируем функции с помощью useCallback
   const updateStepData = useCallback((stepIndex, data) => {
     setStepData((prev) => ({
       ...prev,
@@ -23,7 +23,6 @@ const StepWizard = ({
     }));
   }, []);
 
-  // Переход к следующему шагу
   const nextStep = useCallback(async () => {
     const currentStepData = stepData[currentStep] || {};
 
@@ -47,7 +46,6 @@ const StepWizard = ({
     }
   }, [currentStep, stepData, validateStep, steps.length, onComplete]);
 
-  // Переход к предыдущему шагу
   const prevStep = useCallback(() => {
     if (currentStep > 0 && allowBackNavigation) {
       setDirection(-1);
@@ -55,7 +53,6 @@ const StepWizard = ({
     }
   }, [currentStep, allowBackNavigation]);
 
-  // Переход к конкретному шагу
   const goToStep = useCallback(
     (stepIndex) => {
       if (stepIndex >= 0 && stepIndex < steps.length) {
@@ -280,8 +277,9 @@ const StepWizard = ({
       <div
         style={{
           flex: 1,
+          height: "100%",
           position: "relative",
-          overflow: "hidden",
+          overflowY: "auto", // изменено с hidden на auto для прокрутки
         }}
       >
         <AnimatePresence mode="wait" custom={direction}>
@@ -336,7 +334,7 @@ const StepWizard = ({
               {currentStepConfig?.component &&
                 React.cloneElement(currentStepConfig.component, {
                   data: stepData[currentStep] || {},
-                  updateData: (data) => updateStepData(currentStep, data),
+                  updateData: (newData) => updateStepData(currentStep, newData),
                   onNext: nextStep,
                   onPrev: prevStep,
                 })}

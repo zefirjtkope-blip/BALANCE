@@ -1,14 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 
 function Welcome({ onNext, data = {}, updateData, onPrev }) {
-  // Обновляем данные при монтировании компонента
-  useEffect(() => {
-    if (updateData) {
-      updateData({ welcomeCompleted: true });
-    }
-  }, [updateData]);
-
   const handleNext = () => {
     if (onNext) {
       onNext({});

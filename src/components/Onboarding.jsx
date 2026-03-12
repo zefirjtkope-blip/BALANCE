@@ -1,3 +1,4 @@
+// src/components/Onboarding.jsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import StepWizard from "./StepWizard";
@@ -5,6 +6,7 @@ import AnimatedModal from "./AnimatedModal";
 import AnimatedDropdown from "./AnimatedDropdown";
 
 // Компоненты шагов
+import LanguageStep from "./onboarding/LanguageStep";
 import Welcome from "./onboarding/Welcome";
 import PersonalInfoStep from "./onboarding/PersonalInfoStep";
 import BodyMetricsStep from "./onboarding/BodyMetricsStep";
@@ -13,6 +15,12 @@ import GoalStep from "./onboarding/GoalStep";
 
 // Определение шагов для wizard'а
 const WIZARD_STEPS = [
+  {
+    title: "Выбор языка",
+    shortTitle: "Язык",
+    description: "Выберите язык интерфейса",
+    component: <LanguageStep />,
+  },
   {
     title: "Добро пожаловать",
     shortTitle: "Старт",
@@ -63,15 +71,17 @@ function Onboarding({ onComplete }) {
   // Валидация шагов
   const validateStep = async (stepIndex, stepData) => {
     switch (stepIndex) {
-      case 0: // Welcome
+      case 0: // Language
+        return stepData.language !== undefined; // всегда есть выбор
+      case 1: // Welcome
         return true;
-      case 1: // Personal Info
+      case 2: // Personal Info
         return stepData.gender && stepData.age && stepData.name;
-      case 2: // Body Metrics
+      case 3: // Body Metrics
         return stepData.height && stepData.weight;
-      case 3: // Activity
+      case 4: // Activity
         return stepData.activity;
-      case 4: // Goal
+      case 5: // Goal
         return stepData.goal;
       default:
         return true;
@@ -100,13 +110,16 @@ function Onboarding({ onComplete }) {
 
   return (
     <div
+      className="onboarding-container"
       style={{
-        minHeight: "100vh",
         background: "var(--background-color)",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         padding: "20px",
+        height: "100%",
+        overflowY: "auto",
       }}
     >
       {/* Основной контейнер */}
@@ -125,7 +138,7 @@ function Onboarding({ onComplete }) {
           onComplete={handleComplete}
           validateStep={validateStep}
           theme="dark"
-          className="glass-card"
+          className="glass-card onboarding-step"
         />
       </motion.div>
 
@@ -202,7 +215,7 @@ function Onboarding({ onComplete }) {
   );
 }
 
-// Компонент модального окна регистрации
+// Компонент модального окна регистрации (без изменений)
 const RegistrationModal = ({ step, onStepChange, onComplete, profileData }) => {
   const [formData, setFormData] = useState({
     email: "",

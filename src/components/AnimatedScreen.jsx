@@ -38,7 +38,7 @@ const AnimatedScreen = ({ children, screenKey, direction = "right" }) => {
         animate="center"
         exit="exit"
         transition={transition}
-        className="animated-screen"
+        style={{ height: "100%", overflowY: "auto" }} // именно здесь задаём прокрутку
       >
         {children}
       </motion.div>

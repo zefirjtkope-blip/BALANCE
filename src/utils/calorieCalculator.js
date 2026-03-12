@@ -71,8 +71,13 @@ export function calculateBMR(profile) {
  * @returns {number} TDEE в калориях
  */
 export function calculateTDEE(bmr, activityLevel) {
-  const activityMultiplier = ACTIVITY_LEVELS[activityLevel].value;
-  return Math.round(bmr * activityMultiplier);
+  // Защита от неверного значения activityLevel
+  const level = ACTIVITY_LEVELS[activityLevel];
+  if (!level) {
+    console.warn(`Неизвестный уровень активности: ${activityLevel}, используется sedentary`);
+    return Math.round(bmr * ACTIVITY_LEVELS.sedentary.value);
+  }
+  return Math.round(bmr * level.value);
 }
 
 /**
@@ -82,8 +87,13 @@ export function calculateTDEE(bmr, activityLevel) {
  * @returns {number} целевые калории
  */
 export function calculateTargetCalories(tdee, goal) {
-  const goalModifier = WEIGHT_GOALS[goal].modifier;
-  return Math.round(tdee + goalModifier);
+  // Защита от неверной цели
+  const goalObj = WEIGHT_GOALS[goal];
+  if (!goalObj) {
+    console.warn(`Неизвестная цель: ${goal}, используется maintain`);
+    return Math.round(tdee);
+  }
+  return Math.round(tdee + goalObj.modifier);
 }
 
 /**
@@ -92,6 +102,12 @@ export function calculateTargetCalories(tdee, goal) {
  * @returns {Object} результат расчета
  */
 export function calculateCalories(profile) {
+  // Проверка наличия обязательных полей
+  if (!profile) {
+    console.error('profile не передан в calculateCalories');
+    return null;
+  }
+
   const bmr = calculateBMR(profile);
   const tdee = calculateTDEE(bmr, profile.activity);
   const targetCalories = calculateTargetCalories(tdee, profile.goal);
@@ -100,8 +116,8 @@ export function calculateCalories(profile) {
     bmr,
     tdee,
     targetCalories,
-    goal: WEIGHT_GOALS[profile.goal],
-    activity: ACTIVITY_LEVELS[profile.activity],
+    goal: WEIGHT_GOALS[profile.goal] || WEIGHT_GOALS.maintain,
+    activity: ACTIVITY_LEVELS[profile.activity] || ACTIVITY_LEVELS.sedentary,
   };
 }
 

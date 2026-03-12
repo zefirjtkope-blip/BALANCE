@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import AnimatedDropdown from "../AnimatedDropdown";
 
@@ -10,12 +10,10 @@ const PersonalInfoStep = ({ data = {}, updateData }) => {
     ...data,
   });
 
-  useEffect(() => {
-    updateData(formData);
-  }, [formData, updateData]);
-
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    const newData = { ...formData, [field]: value };
+    setFormData(newData);
+    updateData(newData); // сразу передаём данные наверх
   };
 
   const genderOptions = [

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const ActivityStep = ({ data = {}, updateData }) => {
@@ -6,9 +6,10 @@ const ActivityStep = ({ data = {}, updateData }) => {
     data.activity || null
   );
 
-  useEffect(() => {
-    updateData({ activity: selectedActivity });
-  }, [selectedActivity, updateData]);
+  const handleSelect = (activityId) => {
+    setSelectedActivity(activityId);
+    updateData({ activity: activityId });
+  };
 
   const activityLevels = [
     {
@@ -153,7 +154,7 @@ const ActivityStep = ({ data = {}, updateData }) => {
               boxShadow: `0 8px 32px ${level.color}40`,
             }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setSelectedActivity(level.id)}
+            onClick={() => handleSelect(level.id)}
           >
             {/* Фоновая анимация */}
             <motion.div

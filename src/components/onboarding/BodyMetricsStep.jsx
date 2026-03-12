@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const BodyMetricsStep = ({ data = {}, updateData }) => {
@@ -8,16 +8,13 @@ const BodyMetricsStep = ({ data = {}, updateData }) => {
     ...data,
   });
 
-  useEffect(() => {
-    updateData(formData);
-  }, [formData, updateData]);
-
   const handleInputChange = (field, value) => {
     const numValue = parseFloat(value);
-    setFormData((prev) => ({ ...prev, [field]: numValue }));
+    const newData = { ...formData, [field]: numValue };
+    setFormData(newData);
+    updateData(newData);
   };
 
-  // Вычисление BMI
   const calculateBMI = () => {
     if (formData.height && formData.weight) {
       const heightInMeters = formData.height / 100;
@@ -27,7 +24,6 @@ const BodyMetricsStep = ({ data = {}, updateData }) => {
     return null;
   };
 
-  // Категория BMI
   const getBMICategory = (bmi) => {
     if (!bmi) return null;
     const bmiValue = parseFloat(bmi);
@@ -149,7 +145,6 @@ const BodyMetricsStep = ({ data = {}, updateData }) => {
             whileHover={{ transform: "scaleY(1.2)" }}
           />
 
-          {/* Кастомный thumb для слайдера */}
           <style>{`
             input[type="range"]::-webkit-slider-thumb {
               appearance: none;
@@ -176,7 +171,6 @@ const BodyMetricsStep = ({ data = {}, updateData }) => {
             }
           `}</style>
 
-          {/* Отметки на слайдере */}
           <div
             style={{
               display: "flex",

@@ -28,13 +28,6 @@ const Navigation = ({ currentScreen, onNavigate, foodEntriesCount }) => {
       animationType: "wiggle",
     },
     {
-      id: "assistant",
-      icon: "🤖",
-      label: "Помощник",
-      screen: "assistant",
-      animationType: "float",
-    },
-    {
       id: "history",
       icon: "📈",
       label: "История",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const GoalStep = ({ data = {}, updateData }) => {
@@ -6,13 +6,33 @@ const GoalStep = ({ data = {}, updateData }) => {
   const [targetWeight, setTargetWeight] = useState(data.targetWeight || "");
   const [timeframe, setTimeframe] = useState(data.timeframe || "");
 
-  useEffect(() => {
+  const handleGoalSelect = (goalId) => {
+    setSelectedGoal(goalId);
+    updateData({
+      goal: goalId,
+      targetWeight,
+      timeframe,
+    });
+  };
+
+  const handleTargetWeightChange = (e) => {
+    const value = e.target.value;
+    setTargetWeight(value);
     updateData({
       goal: selectedGoal,
-      targetWeight: targetWeight,
-      timeframe: timeframe,
+      targetWeight: value,
+      timeframe,
     });
-  }, [selectedGoal, targetWeight, timeframe, updateData]);
+  };
+
+  const handleTimeframeSelect = (value) => {
+    setTimeframe(value);
+    updateData({
+      goal: selectedGoal,
+      targetWeight,
+      timeframe: value,
+    });
+  };
 
   const goals = [
     {
@@ -182,7 +202,7 @@ const GoalStep = ({ data = {}, updateData }) => {
               boxShadow: `0 12px 40px ${goal.color}30`,
             }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => setSelectedGoal(goal.id)}
+            onClick={() => handleGoalSelect(goal.id)}
           >
             {/* Декоративный элемент */}
             <motion.div
@@ -429,7 +449,7 @@ const GoalStep = ({ data = {}, updateData }) => {
                   type="number"
                   placeholder="Введите целевой вес"
                   value={targetWeight}
-                  onChange={(e) => setTargetWeight(e.target.value)}
+                  onChange={handleTargetWeightChange}
                   style={{
                     width: "100%",
                     padding: "12px 16px",
@@ -509,7 +529,7 @@ const GoalStep = ({ data = {}, updateData }) => {
                         }20`,
                       }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => setTimeframe(tf.value)}
+                      onClick={() => handleTimeframeSelect(tf.value)}
                     >
                       <div style={{ fontWeight: "600" }}>{tf.label}</div>
                       <div
